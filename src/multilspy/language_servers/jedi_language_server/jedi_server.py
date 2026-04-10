@@ -25,11 +25,12 @@ class JediServer(LanguageServer):
         """
         Creates a JediServer instance. This class is not meant to be instantiated directly. Use LanguageServer.create() instead.
         """
+        cmd = config.server_binary or "jedi-language-server"
         super().__init__(
             config,
             logger,
             repository_root_path,
-            ProcessLaunchInfo(cmd="jedi-language-server", cwd=repository_root_path),
+            ProcessLaunchInfo(cmd=cmd, cwd=repository_root_path),
             "python",
         )
 

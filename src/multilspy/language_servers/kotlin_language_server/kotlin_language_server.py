@@ -17,6 +17,7 @@ from multilspy.language_server import LanguageServer
 from multilspy.lsp_protocol_handler.server import ProcessLaunchInfo
 from multilspy.lsp_protocol_handler.lsp_types import InitializeParams
 from multilspy.multilspy_config import MultilspyConfig
+from multilspy.multilspy_settings import MultilspySettings
 from multilspy.multilspy_utils import FileUtils
 from multilspy.multilspy_utils import PlatformUtils
 
@@ -70,12 +71,12 @@ class KotlinLanguageServer(LanguageServer):
         with open(os.path.join(os.path.dirname(__file__), "runtime_dependencies.json"), "r") as f:
             d = json.load(f)
             del d["_description"]
-        
+
         kotlin_dependency = d["runtimeDependency"]
         java_dependency = d["java"][platform_id.value]
 
         # Setup paths for dependencies
-        static_dir = os.path.join(os.path.dirname(__file__), "static")
+        static_dir = config.server_install_dir or MultilspySettings.get_server_install_directory("KotlinLanguageServer")
         os.makedirs(static_dir, exist_ok=True)
         
         # Setup Java paths

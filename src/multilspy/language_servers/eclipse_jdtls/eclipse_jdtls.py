@@ -149,19 +149,10 @@ class EclipseJDTLS(LanguageServer):
             runtimeDependencies = json.load(f)
             del runtimeDependencies["_description"]
 
-        os.makedirs(str(PurePath(os.path.abspath(os.path.dirname(__file__)), "static")), exist_ok=True)
+        static_dir = config.server_install_dir or MultilspySettings.get_server_install_directory("EclipseJDTLS")
+        os.makedirs(static_dir, exist_ok=True)
 
-        # assert platformId.value in [
-        #     "linux-x64",
-        #     "win-x64",
-        # ], "Only linux-x64 platform is supported for in multilspy at the moment"
-
-        gradle_path = str(
-            PurePath(
-                os.path.abspath(os.path.dirname(__file__)),
-                "static/gradle-7.3.3",
-            )
-        )
+        gradle_path = str(PurePath(static_dir, "gradle-7.3.3"))
 
         if not os.path.exists(gradle_path):
             FileUtils.download_and_extract_archive(
@@ -174,9 +165,7 @@ class EclipseJDTLS(LanguageServer):
         assert os.path.exists(gradle_path)
 
         dependency = runtimeDependencies["vscode-java"][platformId.value]
-        vscode_java_path = str(
-            PurePath(os.path.abspath(os.path.dirname(__file__)), "static", dependency["relative_extraction_path"])
-        )
+        vscode_java_path = str(PurePath(static_dir, dependency["relative_extraction_path"]))
         os.makedirs(vscode_java_path, exist_ok=True)
         jre_home_path = str(PurePath(vscode_java_path, dependency["jre_home_path"]))
         jre_path = str(PurePath(vscode_java_path, dependency["jre_path"]))
@@ -207,9 +196,7 @@ class EclipseJDTLS(LanguageServer):
         assert os.path.exists(jdtls_readonly_config_path)
 
         dependency = runtimeDependencies["intellicode"]["platform-agnostic"]
-        intellicode_directory_path = str(
-            PurePath(os.path.abspath(os.path.dirname(__file__)), "static", dependency["relative_extraction_path"])
-        )
+        intellicode_directory_path = str(PurePath(static_dir, dependency["relative_extraction_path"]))
         os.makedirs(intellicode_directory_path, exist_ok=True)
         intellicode_jar_path = str(PurePath(intellicode_directory_path, dependency["intellicode_jar_path"]))
         intellisense_members_path = str(PurePath(intellicode_directory_path, dependency["intellisense_members_path"]))
